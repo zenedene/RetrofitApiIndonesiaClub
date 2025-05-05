@@ -40,6 +40,11 @@ public class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.ViewHolder> {
                 .error(R.drawable.error_image)        // Gambar jika error
                 .into(holder.teamBadge);
     }
+    public void updateData(List<Team> newTeams) {
+        teamList.clear();
+        teamList.addAll(newTeams);
+        notifyDataSetChanged();
+    }
 
     private String formatKeywords(String keywords) {
         return keywords != null ? "Keywords: " + keywords.replace(",", ", ") : "";

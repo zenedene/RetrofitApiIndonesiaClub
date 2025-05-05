@@ -11,7 +11,9 @@ import com.example.retrofitapi.api.ApiClient;
 import com.example.retrofitapi.api.ApiService;
 import com.example.retrofitapi.model.Team;
 import com.example.retrofitapi.model.TeamResponse;
+import java.util.ArrayList;
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -25,15 +27,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Initialize RecyclerView
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new TeamAdapter(new ArrayList<>()); // Initialize with empty list
+        recyclerView.setAdapter(adapter);
 
-        fetchData();
+        // Get country parameter from Intent
+        String selectedCountry = getIntent().getStringExtra("SELECTED_COUNTRY");
+
+        // Set default country if no parameter passed
+        if(selectedCountry == null || selectedCountry.isEmpty()) {
+            selectedCountry = "Indonesia"; // Default value
+        }
+
+        fetchData(selectedCountry);
     }
 
-    private void fetchData() {
+    private void fetchData(String country) {
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
-        Call<TeamResponse> call = apiService.getTeams("Soccer", "Indonesia");
+        Call<TeamResponse> call = apiService.getTeams(country); // Use parameter
 
         call.enqueue(new Callback<TeamResponse>() {
             @Override
@@ -41,11 +54,12 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     List<Team> teams = response.body().getTeams();
                     if (teams != null && !teams.isEmpty()) {
-                        adapter = new TeamAdapter(teams);
-                        recyclerView.setAdapter(adapter);
+                        adapter.updateData(teams); // Update adapter data
                     } else {
-                        showToast("No teams found");
+                        showToast("No teams found in " + country);
                     }
+                } else {
+                    showToast("Failed to load data");
                 }
             }
 

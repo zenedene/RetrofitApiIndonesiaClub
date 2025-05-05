@@ -6,9 +6,8 @@ import retrofit2.http.Query;
 import com.example.retrofitapi.model.TeamResponse;
 
 public interface ApiService {
-    @GET("api/v1/json/3/search_all_teams.php?s=Soccer&c=Indonesia")
+    @GET("api/v1/json/3/search_all_teams.php?s=Soccer")
     Call<TeamResponse> getTeams(
-            @Query("s") String sport,
-            @Query("c") String country
+            @Query("c") String country // Parameter dinamis untuk negara
     );
 }
