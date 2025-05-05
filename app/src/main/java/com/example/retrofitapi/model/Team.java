@@ -14,7 +14,7 @@ public class Team {
 
     @SerializedName("strKeywords")
     private String strKeywords;
-    @SerializedName("strTeamBadge")
+    @SerializedName("strBadge")
     private String strBadge;
 
     // Getters
